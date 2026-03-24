@@ -127,6 +127,13 @@ function init() {
   elements.fiqhSelect.value = state.fiqh;
   elements.themeSelect.value = state.theme;
   elements.langSelect.value = state.lang;
+
+  const savedAdjust = Number(localStorage.getItem("hijriAdjust"));
+  if (!Number.isNaN(savedAdjust)) {
+    state.hijriAdjust = savedAdjust;
+  }
+  elements.hijriAdjustValue.textContent = String(state.hijriAdjust);
+
   bindEvents();
   applyTranslations();
   loadTimings();
@@ -238,6 +245,7 @@ function updateHijriAdjust(value) {
   const clamped = Math.max(-2, Math.min(2, value));
   state.hijriAdjust = clamped;
   elements.hijriAdjustValue.textContent = String(clamped);
+  localStorage.setItem("hijriAdjust", String(clamped));
   loadTimings();
 }
 
@@ -464,6 +472,7 @@ async function getAdjustedHijriData(gregorianIso, cityLabel, method, school, adj
 }
 
 init();
+
 
 
 
