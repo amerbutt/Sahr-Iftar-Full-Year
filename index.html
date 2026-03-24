@@ -1,0 +1,132 @@
+﻿<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sahar & Iftar Pakistan</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700&family=Noto+Nastaliq+Urdu:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body data-theme="system">
+  <div class="app">
+    <header class="hero">
+      <div class="hero-top">
+        <div class="badge">Pakistan • Sahar & Iftar</div>
+        <div class="controls-inline">
+          <label class="select">
+            <span data-i18n="theme">Theme</span>
+            <select id="themeSelect">
+              <option value="system">System</option>
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </select>
+          </label>
+          <label class="select">
+            <span data-i18n="language">Language</span>
+            <select id="langSelect">
+              <option value="en">English</option>
+              <option value="ur">اردو</option>
+            </select>
+          </label>
+        </div>
+      </div>
+      <div class="hero-main">
+        <h1 data-i18n="title">Sahar & Iftar Times</h1>
+        <p class="subtitle" data-i18n="subtitle">Select city, date and fiqh to view daily timings with Hijri + Gregorian dates.</p>
+      </div>
+    </header>
+
+    <section class="panel">
+      <div class="grid">
+        <label class="field">
+          <span data-i18n="city">City</span>
+          <select id="citySelect"></select>
+        </label>
+        <label class="field">
+          <span data-i18n="fiqh">Fiqh</span>
+          <select id="fiqhSelect">
+            <option value="sunni">Sunni (Hanafi)</option>
+            <option value="jafari">Jafari (Shia Ithna-Ashari)</option>
+          </select>
+        </label>
+        <label class="field">
+          <span data-i18n="year">Year</span>
+          <select id="yearSelect"></select>
+        </label>
+        <label class="field">
+          <span data-i18n="month">Month</span>
+          <select id="monthSelect"></select>
+        </label>
+        <label class="field">
+          <span data-i18n="day">Day</span>
+          <select id="daySelect"></select>
+        </label>
+        <label class="field">
+          <span data-i18n="hijriAdjust">Hijri Adjustment</span>
+          <div class="slider-row">
+            <input type="range" id="hijriAdjust" min="-2" max="2" step="1" value="0">
+            <span id="hijriAdjustValue">0</span>
+          </div>
+        </label>
+      </div>
+    </section>
+
+    <section class="panel highlight">
+      <div class="countdown">
+        <div class="label" data-i18n="countdown">Countdown</div>
+        <div id="countdownDisplay" class="countdown-time">—</div>
+        <div id="countdownNote" class="sub">—</div>
+      </div>
+
+      <div class="summary">
+        <div class="summary-card">
+          <div class="label" data-i18n="gregorianDate">Gregorian Date</div>
+          <div id="gregorianDate" class="value">—</div>
+          <div id="weekday" class="sub">—</div>
+        </div>
+        <div class="summary-card">
+          <div class="label" data-i18n="hijriDate">Hijri Date</div>
+          <div id="hijriDate" class="value">—</div>
+          <div id="hijriWeekday" class="sub">—</div>
+        </div>
+        <div class="summary-card">
+          <div class="label" data-i18n="timezone">Timezone</div>
+          <div id="timezone" class="value">—</div>
+          <div id="method" class="sub">—</div>
+        </div>
+      </div>
+
+      <div class="times">
+        <div class="time-card">
+          <div class="label" data-i18n="sahar">Sahar (Fajr)</div>
+          <div id="saharTime" class="time">—</div>
+        </div>
+        <div class="time-card">
+          <div class="label" data-i18n="iftar">Iftar (Maghrib)</div>
+          <div id="iftarTime" class="time">—</div>
+        </div>
+        <div class="time-card">
+          <div class="label" data-i18n="fastDuration">Fast Duration</div>
+          <div id="fastDuration" class="time">—</div>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="panel">
+      <div class="note">
+        <h2 data-i18n="noteTitle">Notes</h2>
+        <p data-i18n="noteBody">Times are calculated via AlAdhan prayer times API and may differ slightly from local announcements. Always verify with your local mosque.</p>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div>Built for Pakistan • 2026 • Amer Butt</div>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
