@@ -75,7 +75,7 @@ const state = {
   lang: "en",
   theme: "system",
   fiqh: "sunni",
-  city: cities[0].key,
+  city: "islamabad",
   year: new Date().getFullYear(),
   month: new Date().getMonth() + 1,
   day: new Date().getDate(),
@@ -91,7 +91,8 @@ const elements = {
   yearSelect: document.getElementById("yearSelect"),
   monthSelect: document.getElementById("monthSelect"),
   daySelect: document.getElementById("daySelect"),
-  hijriAdjust: document.getElementById("hijriAdjust"),
+  hijriMinus: document.getElementById("hijriMinus"),
+  hijriPlus: document.getElementById("hijriPlus"),
   hijriAdjustValue: document.getElementById("hijriAdjustValue"),
   themeSelect: document.getElementById("themeSelect"),
   langSelect: document.getElementById("langSelect"),
@@ -210,13 +211,12 @@ function bindEvents() {
     loadTimings();
   });
 
-  elements.hijriAdjust.addEventListener("input", () => {
-    state.hijriAdjust = Number(elements.hijriAdjust.value);
-    elements.hijriAdjustValue.textContent = state.hijriAdjust;
+  elements.hijriMinus.addEventListener("click", () => {
+    updateHijriAdjust(state.hijriAdjust - 1);
   });
 
-  elements.hijriAdjust.addEventListener("change", () => {
-    loadTimings();
+  elements.hijriPlus.addEventListener("click", () => {
+    updateHijriAdjust(state.hijriAdjust + 1);
   });
 
   elements.themeSelect.addEventListener("change", () => {
@@ -232,6 +232,13 @@ function bindEvents() {
     populateMonths();
     applyTranslations();
   });
+}
+
+function updateHijriAdjust(value) {
+  const clamped = Math.max(-2, Math.min(2, value));
+  state.hijriAdjust = clamped;
+  elements.hijriAdjustValue.textContent = String(clamped);
+  loadTimings();
 }
 
 function applyTranslations() {
@@ -263,7 +270,7 @@ function getFiqhConfig() {
 async function loadTimings() {
   const cityLabel = getCityLabel();
   const { method, school, methodLabel } = getFiqhConfig();
-  const data = await getMonthData(cityLabel, method, school, state.month, state.year, state.hijriAdjust);
+  const data = await getMonthData(cityLabel, method, school, state.month, state.year, 0);
   if (!data) return;
   const dayData = data[state.day - 1];
   if (!dayData) return;
@@ -287,7 +294,7 @@ async function loadTimings() {
   const hijriData = await getAdjustedHijriData(gregorianIso, cityLabel, method, school, state.hijriAdjust);
   setHijriDisplay(hijriData || dayData.date.hijri);
 
-  state.nextDayData = await getNextDayData(data, cityLabel, method, school, state.hijriAdjust);
+  state.nextDayData = await getNextDayData(data, cityLabel, method, school, 0);
   updateCountdown(gregorianIso, fajr, maghrib);
 }
 
@@ -299,6 +306,12 @@ function toIsoDate(gregorian) {
   const month = String(gregorian.month.number).padStart(2, "0");
   const day = String(gregorian.day).padStart(2, "0");
   return `${gregorian.year}-${month}-${day}`;
+}
+
+function addDaysIso(isoDate, offsetDays) {
+  const base = new Date(isoDate + "T00:00:00Z");
+  base.setUTCDate(base.getUTCDate() + offsetDays);
+  return base.toISOString().slice(0, 10);
 }
 
 function setHijriDisplay(hijri) {
@@ -373,6 +386,16 @@ function updateCountdown(gregorianDate, fajrTime, maghribTime) {
   state.countdownTimer = setInterval(update, 1000);
 }
 
+function formatCountdown(milliseconds) {
+  if (milliseconds <= 0) return "0h 0m 0s";
+
+  const totalSeconds = Math.floor(milliseconds / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  return `${hours}h ${minutes}m ${seconds}s`;
+}
+
 async function getMonthData(cityLabel, method, school, month, year, adjustment) {
   const cacheKey = `${cityLabel}|${month}|${year}|${method}|${school}|${adjustment}`;
 
@@ -425,12 +448,9 @@ async function getNextDayData(currentMonthData, cityLabel, method, school, adjus
 async function getAdjustedHijriData(gregorianIso, cityLabel, method, school, adjustment) {
   if (!adjustment) return null;
 
-  const targetDate = new Date(gregorianIso + "T00:00:00");
-  targetDate.setDate(targetDate.getDate() + adjustment);
-
-  const targetYear = targetDate.getFullYear();
-  const targetMonth = targetDate.getMonth() + 1;
-  const targetIso = targetDate.toISOString().split("T")[0];
+  const targetIso = addDaysIso(gregorianIso, adjustment);
+  const targetYear = Number(targetIso.slice(0, 4));
+  const targetMonth = Number(targetIso.slice(5, 7));
 
   const monthData = await getMonthData(cityLabel, method, school, targetMonth, targetYear, 0);
   if (!monthData) return null;
@@ -443,14 +463,7 @@ async function getAdjustedHijriData(gregorianIso, cityLabel, method, school, adj
   return match ? match.date.hijri : null;
 }
 
-function formatCountdown(milliseconds) {
-  if (milliseconds <= 0) return "0h 0m 0s";
-
-  const totalSeconds = Math.floor(milliseconds / 1000);
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-  return `${hours}h ${minutes}m ${seconds}s`;
-}
-
 init();
+
+
+

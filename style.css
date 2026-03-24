@@ -159,15 +159,32 @@ input[type="range"] {
   min-width: 140px;
 }
 
-.slider-row {
+.adjust-row {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.slider-row span {
+.adjust-row span {
   min-width: 24px;
   font-weight: 600;
+  text-align: center;
+}
+
+.adjust-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-alt);
+  color: var(--text);
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.adjust-btn:active {
+  transform: translateY(1px);
 }
 
 .summary {
